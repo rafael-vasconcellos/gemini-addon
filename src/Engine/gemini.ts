@@ -56,14 +56,14 @@ class EngineClient extends CustomEngine {
     get model_name(): string { return this.getEngine()?.getOptions('model_name') ?? "gemini-1.5-flash" }
 
     constructor(thisAddon: Addon) { 
-        trans.config.maxRequestLength = batchSize
+        trans.config.maxRequestLength = Infinity
         super({ 
             id: thisAddon.package.name,
             name: thisAddon.package.title,
             description: thisAddon.package.description,
             version: thisAddon.package.version,
             author: thisAddon.package.author?.name ?? thisAddon.package.author as unknown,
-            maxRequestLength: trans.config.maxRequestLength,
+            maxRequestLength: batchSize,
             batchDelay: 1, // 0 is a falsy value, it'll be reverted to the default value (5000)
             optionsForm: { 
                 schema: { 
@@ -81,13 +81,6 @@ class EngineClient extends CustomEngine {
                         required: false,
                         enum: ["free", "pro"]
                     },
-                    target_language: { 
-                        type: "string",
-                        title: "Target language",
-                        description: "Choose the target language",
-                        default: "English - US",
-                        required: false
-                    },
                     model_name: { 
                         type: "string",
                         title: "Model name",
@@ -95,7 +88,21 @@ class EngineClient extends CustomEngine {
                         default: "gemini-1.5-flash",
                         required: false,
                         enum: ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.5-flash-002", "gemini-1.5-pro-002", "gemini-2.0-flash-exp"]
-                    }
+                    },
+                    maxRequestLength: { 
+                        type: "number",
+                        title: "Max request length",
+                        description: "Number of rows to translate per request",
+                        default: batchSize,
+                        required: true,
+                    },
+                    target_language: { 
+                        type: "string",
+                        title: "Target language",
+                        description: "Choose the target language",
+                        default: "English - US",
+                        required: false
+                    },
                 },
 
                 form: [ 
@@ -108,6 +115,8 @@ class EngineClient extends CustomEngine {
                         key: "api_type"
                     }, { 
                         key: "model_name"
+                    }, { 
+                        key: "maxRequestLength"
                     }, { 
                         key: "target_language"
                     }, 
