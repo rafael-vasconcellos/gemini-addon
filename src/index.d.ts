@@ -4,7 +4,8 @@ declare type Addon = {
         name: string,
         author: {
             name: string
-        },
+            [key: string]: string
+        } | string,
         version: string,
         description: string,
         title: string

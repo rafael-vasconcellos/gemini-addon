@@ -3,7 +3,9 @@
   "title": "Gemini",
   "description": "Google's gemini support for Translator++.",
   "icon": "icon.png",
-  "author": "github.com/rafael-vasconcellos",
+  "author": { 
+    "name": "github.com/rafael-vasconcellos"
+  },
   "version": "1.0.0",
   "main": "main.js",
   "autoload": false,
