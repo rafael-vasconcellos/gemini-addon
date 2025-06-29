@@ -98,6 +98,12 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
-    "outDir": "./dist/gemini"
+    "outDir": "./dist/gemini",
+    "baseUrl": "./",
+    "paths": { 
+      "jsonrepair": ["./lib/jsonrepair"],
+      "@google/generative-ai": ["./lib/@google/generative-ai"],
+      "src/*": ["www/addons/openai/*"]
+    }
   }
 }
