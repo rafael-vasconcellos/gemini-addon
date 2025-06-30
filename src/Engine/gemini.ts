@@ -97,7 +97,7 @@ class EngineClient extends CustomEngine {
                         required: false,
                         enum: [
                             "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.0-flash-thinking", "gemini-2.5-flash", 
-                            "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-pro-latest", "gemini-2.0-pro-exp-02-05", , "gemini-2.5-pro"
+                            "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-pro-latest", "gemini-2.0-pro-exp-02-05", "gemini-2.5-pro"
                         ]
                     }
                 },
