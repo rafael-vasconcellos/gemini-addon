@@ -93,11 +93,11 @@ class EngineClient extends CustomEngine {
                         type: "string",
                         title: "Model name",
                         description: "Choose the gemini model",
-                        default: "gemini-1.5-flash",
+                        default: "gemini-2.5-flash",
                         required: false,
                         enum: [
-                            "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.0-flash-thinking-exp-01-21", 
-                            "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-pro-latest", "gemini-2.0-pro-exp-02-05"
+                            "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.0-flash-thinking", "gemini-2.5-flash", 
+                            "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-pro-latest", "gemini-2.0-pro-exp-02-05", , "gemini-2.5-pro"
                         ]
                     }
                 },
@@ -119,7 +119,7 @@ class EngineClient extends CustomEngine {
                 onChange: (elm: HTMLInputElement, key: string, value: unknown) => { 
                     this.update(key, value);
                     if (this.api_type==="free" && this.model_name.includes("pro")) { 
-                        alert("Cannot use a pro model with a free key! Rate limit is too low (50 requests per day).")
+                        alert("you are using a pro model with a free key! The rate limit is way lower (100 requests per day).")
                     }
                 }
             }
@@ -171,13 +171,13 @@ class EngineClient extends CustomEngine {
 
     protected async execute(texts: string[]) { 
         if (this.api_type==="free" && this.model_name.includes("pro")) { 
-            alert("Cannot use a pro model with a free key! Rate limit is too low (50 requests per day).")
-            return this.abort()
+            alert("you are using a pro model with a free key! The rate limit is way lower (100 requests per day).")
+            //return this.abort()
         }
 
         if (this.api_type === "free") { 
             return this.executeWithRateLimit(texts, { 
-                requests: 15,
+                requests: 10,
                 seconds: 60
             }) 
 
