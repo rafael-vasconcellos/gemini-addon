@@ -155,7 +155,7 @@ class EngineClient extends CustomEngine {
 
 
         const result = (await parseResponse(response, texts.length))
-        .filter(text => text !== "string")
+        //.filter(text => text !== "string")
         if (result.length !== texts.length) { 
             const message = result.length === 0? 
 				"Failed to parse: " + response 

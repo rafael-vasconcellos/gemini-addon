@@ -52,7 +52,7 @@ esbuild.build({
         "https://gist.githubusercontent.com/rafael-vasconcellos/6ec7af6c2601e0aa428b1ab727d459ac/raw/36df02e20aba2b3bfe97648309ff96d2ee7b97c2/trans.js", 
         path.resolve("./dist/www/js/trans.js")
     )
-    .catch(e => console.log(e.stack))
+
     files.forEach(file => {
         fs.copyFile(path.resolve(file.src), path.resolve(file.dest), (err) => { 
             if (err) { console.log(err) }
