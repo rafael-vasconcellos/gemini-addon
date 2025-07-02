@@ -1,10 +1,19 @@
-declare type Addon = {
+interface ContextMenuItem { 
+    name: string,
+	callback?: CallableFunction
+	submenu?: { 
+		items: (ContextMenuItem & { 
+            key: string 
+        })[]
+	}
+}
+
+declare type Addon = { 
     optionsForm: TranslationEngineOptionForm | TranslationEngineOptionForm['schema']
     package: {
         name: string,
         author: {
             name: string
-            [key: string]: string
         } | string,
         version: string,
         description: string,
@@ -17,14 +26,35 @@ declare var trans: {
     [id: string]: TranslatorEngine;
     getSl(): string;
     getTl(): string;
+
     abortTranslation(): void
+    getAllfiles(): { 
+        [key: string]: any
+    }
     prototype: { 
         translateAllByRows(translator: TranslatorEngine, options): void
     }
+    project: { 
+        files: { 
+            [key: string]: { 
+                data: string[][]
+            }
+        }
+    }
+    grid: Grid
+    data: string[][]
+    gridContextMenu: Record<string, ContextMenuItem>
+    keyColumn: number
+    translator: TranslatorEngine[]
+    evalTranslationProgress(): void
+    getTextFromLastSelected(): string
+    textEditorSetValue(s: string): void
+    translateByReference(arr: string[]): any
 };
 
 declare var common: {
     fetch: (...args: any) => any
+    gridSelectedCells(): Cell[]
 }
 
 declare var $: CallableFunction
