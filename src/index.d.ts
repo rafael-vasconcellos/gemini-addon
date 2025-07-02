@@ -46,6 +46,7 @@ declare var trans: {
     gridContextMenu: Record<string, ContextMenuItem>
     keyColumn: number
     translator: TranslatorEngine[]
+    save(): void
     evalTranslationProgress(): void
     getTextFromLastSelected(): string
     textEditorSetValue(s: string): void
