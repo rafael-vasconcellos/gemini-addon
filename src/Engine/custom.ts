@@ -77,6 +77,11 @@ class CustomEngine {
                             ui.log("Saving your project");
                             await trans.save();
                         }
+                    },
+                    onError: (e: ErrorEvt, _: any, message: string) => { 
+                        const err = e as TranslationFailException
+                        ui.log("Status: " + e.status)
+                        ui.log(message)
                     }
                 })
             }
