@@ -84,6 +84,7 @@ class CustomEngine {
     }
 
     public async translate(texts: string[], options: Partial<TranslatorOptions>) { 
+        const start_time = performance.now() / 1000
         if (!this.api_key) { 
             alert('No API key specified!')
             return this.abort()
@@ -91,10 +92,19 @@ class CustomEngine {
 
         ui.log("\n\n" + "Batch size: " + texts.length);
         return await this.execute(texts)
-            .then(result => options.onAfterLoading && options.onAfterLoading(result))
+            .then(result => { 
+                const end_time = performance.now() / 1000
+                ui.log(`Batch done in ${end_time - start_time}s.`)
+                if (!options.onAfterLoading) { throw new TranslationFailException({ 
+                    status: 200,
+                    message: 'Fatal error: "onAfterLoading" method not received!'
+                }) }
+                options.onAfterLoading(result)
+            })
             .catch( (obj: TranslationFailException) => { 
                 if (!obj.status) { ui.log(obj.stack) }
-                options.onError && options.onError(obj, undefined, obj.message)
+                if (!options.onError) { return ui.log('Fatal error: "onError" method not received!') }
+                options.onError(obj, undefined, obj.message)
             })
             .finally(() => options.always && options.always())
     }
