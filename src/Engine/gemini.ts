@@ -158,7 +158,7 @@ class EngineClient extends CustomEngine {
         //.filter(text => text !== "string")
         if (result.length !== texts.length) { 
             const message = result.length === 0? 
-				"Failed to parse: " + response 
+				"Failed to parse JSON."
 				: `Unexpected error: length ${result.length} out of ${texts.length}.` + '\n\n' + response;
             throw new TranslationFailException({
                 message,
