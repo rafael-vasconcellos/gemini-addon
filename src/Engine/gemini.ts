@@ -117,7 +117,7 @@ class EngineClient extends CustomEngine {
                     }, 
                 ],
                 onChange: (elm: HTMLInputElement, key: string, value: unknown) => { 
-                    this.update(key, value);
+                    this.update(key, typeof value === "string"? value : "") 
                     if (this.api_type==="free" && this.model_name.includes("pro")) { 
                         alert("you are using a pro model with a free key! The rate limit is way lower (100 requests per day).")
                     }
