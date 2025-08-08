@@ -37,26 +37,28 @@ const safetySettings = [
     }
 ]
 
-const batchSize = 25
-const responseSchema: { 
-    type: ISchemaType
-    properties: Record<string, any>
-    required?: string[]
-} = { 
-    type: SchemaType.OBJECT,
-    properties: {}
+function getResponseSchema(batchSize: number = 25) { 
+    const responseSchema: { 
+        type: ISchemaType
+        properties: Record<string, any>
+        required?: string[]
+    } = { 
+        type: SchemaType.OBJECT,
+        properties: {}
+    }
+    for (let i=0; i<batchSize; i++) { 
+        responseSchema.properties[`${i}`] = { type: "string" }
+    }
+    responseSchema.required = Object.keys(responseSchema.properties)
+    return responseSchema
 }
-for (let i=0; i<batchSize; i++) { 
-    responseSchema.properties[`${i}`] = { type: "string" }
-}
-responseSchema.required = Object.keys(responseSchema.properties)
 
 
 class EngineClient extends CustomEngine { 
     get model_name(): string { return this.getEngine()?.getOptions('model_name') ?? "gemini-1.5-flash" }
 
     constructor(thisAddon: Addon) { 
-        trans.config.maxRequestLength = batchSize
+        trans.config.maxRequestLength = 200
         super({ 
             id: thisAddon.package.name,
             name: thisAddon.package.title,
@@ -64,7 +66,7 @@ class EngineClient extends CustomEngine {
             version: thisAddon.package.version,
             author: typeof thisAddon.package.author === 'object'? 
                 thisAddon.package.author.name : thisAddon.package.author ?? '',
-            maxRequestLength: trans.config.maxRequestLength,
+            maxRequestLength: 25,
             batchDelay: 1, // 0 is a falsy value, it'll be reverted to the default value (5000)
             optionsForm: { 
                 schema: { 
@@ -117,7 +119,7 @@ class EngineClient extends CustomEngine {
                     }, 
                 ],
                 onChange: (elm: HTMLInputElement, key: string, value: unknown) => { 
-                    this.update(key, typeof value === "string"? value : "") 
+                    this.update(key, value && typeof value !== "object"? value : "") 
                     if (this.api_type==="free" && this.model_name.includes("pro")) { 
                         alert("you are using a pro model with a free key! The rate limit is way lower (100 requests per day).")
                     }
@@ -142,7 +144,7 @@ class EngineClient extends CustomEngine {
             generationConfig: { 
                 temperature: 0, 
                 responseMimeType: "application/json",
-                responseSchema
+                responseSchema: getResponseSchema(texts.length)
             },
             safetySettings,
         })
