@@ -98,7 +98,10 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "types": ["node"],
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/www/addons/gemini",
+    "rootDir": "./src",
     "baseUrl": "./",
     "paths": { 
       "jsonrepair": ["./lib/jsonrepair"],
