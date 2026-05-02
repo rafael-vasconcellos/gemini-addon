@@ -12,7 +12,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      CUSTOM_TRANSJS: ${{ secrets.CUSTOM_TRANSJS }}
+      CUSTOM_TRANSJS: ${{ vars.CUSTOM_TRANSJS }}
 
     steps:
       - name: Checkout repository
