@@ -58,7 +58,6 @@ class EngineClient extends CustomEngine {
     get model_name(): string { return this.getEngine()?.getOptions('model_name') ?? "gemini-1.5-flash" }
 
     constructor(thisAddon: Addon) { 
-        trans.config.maxRequestLength = 200
         super({ 
             id: thisAddon.package.name,
             name: thisAddon.package.title,
@@ -66,7 +65,7 @@ class EngineClient extends CustomEngine {
             version: thisAddon.package.version,
             author: typeof thisAddon.package.author === 'object'? 
                 thisAddon.package.author.name : thisAddon.package.author ?? '',
-            maxRequestLength: 25,
+            maxRequestLength: 1100,
             batchDelay: 1, // 0 is a falsy value, it'll be reverted to the default value (5000)
             optionsForm: { 
                 schema: { 
