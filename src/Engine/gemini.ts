@@ -39,7 +39,7 @@ const safetySettings = [
 
 function getResponseSchema(batchSize: number = 25) { 
     const responseSchema: { 
-        type: ISchemaType
+        type: ISchemaType.OBJECT
         properties: Record<string, any>
         required?: string[]
     } = { 
@@ -139,7 +139,7 @@ class EngineClient extends CustomEngine {
         const GoogleClient = new GoogleGenerativeAI(this.api_key as string)
         const generativeModel = GoogleClient.getGenerativeModel({ 
             model: this.model_name,
-            systemInstruction: systemPrompt(this.target_language)
+            systemInstruction: systemPrompt(this.target_language),
         })
         const parts = [
             { text: userPrompt(texts) },
@@ -150,7 +150,7 @@ class EngineClient extends CustomEngine {
             generationConfig: { 
                 temperature: 0, 
                 responseMimeType: "application/json",
-                responseSchema: getResponseSchema(texts.length)
+                responseSchema: getResponseSchema(texts.length),
             },
             safetySettings,
         })
