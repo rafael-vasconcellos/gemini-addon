@@ -106,7 +106,7 @@
     "paths": { 
       "jsonrepair": ["./lib/jsonrepair"],
       "@google/generative-ai": ["./lib/@google/generative-ai"],
-      "src/*": ["www/addons/openai/*"]
+      "src/*": ["www/addons/gemini/*"]
     }
   }
 }
