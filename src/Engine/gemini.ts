@@ -1,25 +1,20 @@
-import { PromptFeedback, GoogleGenerativeAIResponseError as IGoogleGenerativeAIResponseError, SchemaType as ISchemaType } from "@google/generative-ai"
+import { Type as IType } from '@google/genai'
 import { ICustomEngineModule } from './custom'
 import { IPromptModule } from './Prompt'
-const { 
-    GoogleGenerativeAI, 
-    HarmCategory, 
-    HarmBlockThreshold, 
-    SchemaType
-} = require("www/addons/gemini/lib/@google/generative-ai.js") as typeof import('@google/generative-ai');
+const {
+    GoogleGenAI,
+    HarmBlockThreshold,
+    HarmCategory,
+    ThinkingLevel,
+    Type,
+    GenerateContentResponsePromptFeedback,
+    HarmBlockMethod,
+} = require('@google/genai') as typeof import('@google/genai')
 const { CustomEngine, TranslationFailException } = require("www/addons/gemini/Engine/custom.js") as ICustomEngineModule;
 const { systemPrompt, userPrompt, parseResponse } = require("www/addons/gemini/Engine/Prompt.js") as IPromptModule;
 
 
 
-
-interface IGoogleFilterBlock { 
-    text: CallableFunction // throws the error
-    functionCall: CallableFunction
-    functionCalls: CallableFunction
-    usageMetadata: Record<string, unknown>
-    promptFeedback: PromptFeedback
-}
 
 const safetySettings = [
     {
@@ -39,11 +34,11 @@ const safetySettings = [
 
 function getResponseSchema(batchSize: number = 25) { 
     const responseSchema: { 
-        type: ISchemaType.OBJECT
+        type: IType.OBJECT
         properties: Record<string, any>
         required?: string[]
     } = { 
-        type: SchemaType.OBJECT,
+        type: Type.OBJECT,
         properties: {}
     }
     for (let i=0; i<batchSize; i++) { 
@@ -136,30 +131,50 @@ class EngineClient extends CustomEngine {
     }
 
     public async fetcher(texts: string[]) { 
-        const GoogleClient = new GoogleGenerativeAI(this.api_key as string)
-        const generativeModel = GoogleClient.getGenerativeModel({ 
-            model: this.model_name,
-            systemInstruction: systemPrompt(this.target_language),
-        })
-        const parts = [
-            { text: userPrompt(texts) },
-        ]
-
-        const response = (await generativeModel.generateContent({ 
-            contents: [{ role: "user", parts }],
-            generationConfig: { 
-                temperature: 0, 
-                responseMimeType: "application/json",
-                responseSchema: getResponseSchema(texts.length),
+        const ai = new GoogleGenAI({
+            apiKey: this.api_key as string,
+        });
+        const contents = [
+            {
+                role: 'user',
+                parts: [
+                    {
+                        text: userPrompt(texts),
+                    },
+                ],
             },
-            safetySettings,
+        ];
+
+        const response = await ai.models.generateContent({
+            model: this.model_name,
+            config: {
+                safetySettings,
+                thinkingConfig: {
+                    thinkingLevel: ThinkingLevel.HIGH,
+                },
+                temperature: 0,
+                responseMimeType: "application/json",
+                //responseJsonSchema: {},
+                responseSchema: getResponseSchema(texts.length),
+                systemInstruction: systemPrompt(this.target_language)
+            },
+            contents,
         })
-        .catch( (e: IGoogleGenerativeAIResponseError<IGoogleFilterBlock>) => { 
+        .then(async response => {
+            if (!response.text) {
+                throw new TranslationFailException({
+                    message: await response.sdkHttpResponse?.responseInternal.text() as string,
+                    status: response.sdkHttpResponse?.responseInternal.status
+                })
+            }
+
+            return response.text
+        })
+        .catch((e) => { 
             throw new TranslationFailException({ 
-                message: e.message,
-                status: e.response?.promptFeedback.blockReason ?? 'BLOCKED'
+                message: e.message, 
             })
-        }))?.response?.text()
+        })
 
 
         let result = (await parseResponse(response, texts.length))

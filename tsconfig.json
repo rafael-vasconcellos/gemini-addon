@@ -105,6 +105,7 @@
     "baseUrl": "./",
     "paths": { 
       "jsonrepair": ["./lib/jsonrepair"],
+      "@google/genai": ["./lib/@google/genai"],
       "@google/generative-ai": ["./lib/@google/generative-ai"],
       "src/*": ["www/addons/gemini/*"]
     }
