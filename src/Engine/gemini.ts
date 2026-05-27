@@ -95,8 +95,8 @@ class EngineClient extends CustomEngine {
                             "gemini-1.5-flash", "gemini-1.5-flash-8b", 
                             "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.0-flash-thinking", 
                             "gemini-2.5-flash", "gemini-2.5-flash-lite", 
-                            "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview", 
-                            "gemini-flash-latest", "gemini-flash-lite-latest", 
+                            "gemini-3-flash-preview", "gemini-3.1-flash-lite", 
+                            "gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest", 
 
                             "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-pro-latest", 
                             "gemini-2.0-pro-exp-02-05", "gemini-2.0-pro", "gemini-2.5-pro", 
