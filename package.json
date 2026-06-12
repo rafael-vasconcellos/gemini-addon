@@ -21,7 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.19.17",
-    "axios": "^1.10.0",
+    "axios": "^1.16.0",
     "dotenv": "^17.4.2",
     "esbuild": "^0.25.2",
     "tsc-alias": "^1.8.16",
