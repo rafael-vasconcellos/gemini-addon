@@ -160,24 +160,24 @@ class EngineClient extends CustomEngine {
             },
             contents,
         })
-        .then(async response => {
-            if (!response.text) {
-                throw new TranslationFailException({
-                    message: await response.sdkHttpResponse?.responseInternal.text() as string,
-                    status: response.sdkHttpResponse?.responseInternal.status
-                })
-            }
-
-            return response.text
-        })
         .catch((e) => { 
             throw new TranslationFailException({ 
                 message: e.message, 
             })
         })
 
+        if (!response?.text) {
+            //console.log(response)
+            const message = await response.sdkHttpResponse?.responseInternal?.text()
+                 || response.promptFeedback?.blockReason
+            throw new TranslationFailException({
+                message: message as string,
+                status: response.sdkHttpResponse?.responseInternal?.status ?? 200
+            })
+        }
 
-        let result = (await parseResponse(response, texts.length))
+
+        let result = (await parseResponse(response.text, texts.length))
         //.filter(text => text !== "string")
         if (result.length !== texts.length || !(result instanceof Array)) { 
             const message = result.length === 0? 
@@ -201,7 +201,7 @@ class EngineClient extends CustomEngine {
 
         if (this.api_type === "free") { 
             return this.executeWithRateLimit(texts, { 
-                requests: 10,
+                requests: 5,
                 seconds: 60
             }) 
 
