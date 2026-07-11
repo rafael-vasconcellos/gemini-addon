@@ -16,6 +16,21 @@ const { systemPrompt, userPrompt, parseResponse } = require("www/addons/gemini/E
 
 
 
+interface ErrorInternalResponse {
+    error: {
+        code: number
+        message: string
+        status: string
+        details: {
+            "@type": string
+            links: {
+                description: string
+                url: string
+            }[]
+        }[]
+    }
+}
+
 const safetySettings = [
     {
       category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -161,13 +176,25 @@ class EngineClient extends CustomEngine {
             contents,
         })
         .catch((e) => { 
+            let status
+            let message = e.message
+            try {
+                const { error }: ErrorInternalResponse = JSON.parse(e.message)
+                message = error.message
+                status = error.code
+            } catch(e2) {
+                console.error(e2)
+            }
+
             throw new TranslationFailException({ 
-                message: e.message, 
+                status,
+                message, 
             })
         })
 
         if (!response?.text) {
             //console.log(response)
+            //console.log(response.sdkHttpResponse?.headers) // content-type
             const message = await response.sdkHttpResponse?.responseInternal?.text()
                  || response.promptFeedback?.blockReason
             throw new TranslationFailException({
